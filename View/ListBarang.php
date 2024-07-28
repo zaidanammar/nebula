@@ -1,5 +1,5 @@
 <?php
-require_once '../Model/HakAkses.php'; // Ensure the path is correct
+require_once '../Model/Barang.php'; // Ensure the path is correct
 
 // Database connection
 $servername = "localhost";
@@ -16,14 +16,16 @@ try {
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $namaAkses = $_POST['namaAkses'];
+    $namaBarang = $_POST['namaBarang'];
     $keterangan = $_POST['keterangan'];
+    $satuan = $_POST['satuan'];
+    $idPengguna = $_POST['idPengguna'];
 
-    $hakAkses = new HakAkses($pdo);
-    $hakAkses->create($namaAkses, $keterangan);
+    $barang = new Barang($pdo);
+    $barang->create($namaBarang, $keterangan, $satuan, $idPengguna);
 
     // Redirect to avoid form resubmission
-    header('Location: ListHakAkses.php');
+    header('Location: ListBarang.php');
     exit();
 }
 ?>
@@ -31,46 +33,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Daftar Hak Akses</title>
+    <title>Daftar Barang</title>
 </head>
 <body>
-    <h1>Daftar Hak Akses</h1>
+    <h1>Daftar Barang</h1>
 
-    <!-- Form to add a new Hak Akses -->
+    <!-- Form to add a new Barang -->
     <form method="POST" action="">
-        <label for="namaAkses">Nama Akses:</label>
-        <input type="text" id="namaAkses" name="namaAkses" required><br>
+        <label for="namaBarang">Nama Barang:</label>
+        <input type="text" id="namaBarang" name="namaBarang" required><br>
 
         <label for="keterangan">Keterangan:</label>
         <input type="text" id="keterangan" name="keterangan" required><br>
 
-        <input type="submit" value="Tambah Hak Akses">
+        <label for="satuan">Satuan:</label>
+        <input type="text" id="satuan" name="satuan" required><br>
+
+        <label for="idPengguna">ID Pengguna:</label>
+        <input type="number" id="idPengguna" name="idPengguna" required><br>
+
+        <input type="submit" value="Tambah Barang">
     </form>
 
     <table border="1">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Nama Akses</th>
+                <th>Nama Barang</th>
                 <th>Keterangan</th>
+                <th>Satuan</th>
+                <th>Pemilik</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            $hakAkses = new HakAkses($pdo);
-            $rows = $hakAkses->read();
+            $barang = new Barang($pdo);
+            $rows = $barang->read();
 
             foreach ($rows as $row) {
                 echo "
                 <tr>
                     <td>{$row['id']}</td>
-                    <td>{$row['NamaAkses']}</td>
+                    <td>{$row['NamaBarang']}</td>
                     <td>{$row['Keterangan']}</td>
+                    <td>{$row['Satuan']}</td>
+                    <td>{$row['IdPengguna']}</td>
                     <td>
-                        <a href='EditHakAkses.php?id={$row['id']}'>Edit</a>
+                        <a href='EditBarang.php?id={$row['id']}'>Edit</a>
                         --
-                        <a href='DeleteHakAkses.php?id={$row['id']}' onclick='return confirm(\"Yakin ingin menghapus?\");'>Delete</a>
+                        <a href='DeleteBarang.php?id={$row['id']}' onclick='return confirm(\"Yakin ingin menghapus?\");'>Delete</a>
                     </td>
                 </tr>
                 ";

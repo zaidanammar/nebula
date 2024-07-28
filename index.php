@@ -1,32 +1,47 @@
+<?php
+require_once 'Model/Penjualan.php'; // Ensure the path is correct
+
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "shop";
+
+try {
+    $pdo = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+
+$penjualan = new Penjualan($pdo);
+$profitLoss = $penjualan->getProfitLoss();
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Daftar Barang</title>
+    <title>Index Page</title>
 </head>
 <body>
-    <h1>Daftar Barang</h1>
-    <a href="add_barang.php">Tambah Barang</a>
-    <table border="1">
-        <tr>
-            <th>Nama Barang</th>
-            <th>Keterangan</th>
-            <th>Satuan</th>
-            <th>Pemilik</th>
-            <th>Aksi</th>
-        </tr>
+    <h1>Welcome to the Index Page</h1>
+    <ul>
+        <li><a href="View/ListBarang.php">List Barang</a></li>
+        <li><a href="View/ListHakAkses.php">List Hak Akses</a></li>
+        <li><a href="View/ListPembelian.php">List Pembelian</a></li>
+        <li><a href="View/ListPengguna.php">List Pengguna</a></li>
+        <li><a href="View/ListPenjualan.php">List Penjualan</a></li>
+    </ul>
+
+    <h2>Profit/Loss</h2>
+    <p>
         <?php
-        foreach ($barangList as $barang): ?>
-        <tr>
-            <td><?= $barang['NamaBarang']; ?></td>
-            <td><?= $barang['Keterangan']; ?></td>
-            <td><?= $barang['Satuan']; ?></td>
-            <td><?= $barang['IdPengguna']; ?></td>
-            <td>
-                <a href="edit_barang.php?id=<?= $barang['IdBarang']; ?>">Edit</a>
-                <a href="delete_barang.php?id=<?= $barang['IdBarang']; ?>" onclick="return confirm('Yakin ingin menghapus?');">Delete</a>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
+        if ($profitLoss !== null) {
+            echo "The current profit/loss is: " . number_format($profitLoss, 2);
+        } else {
+            echo "No sales data available.";
+        }
+        ?>
+    </p>
+    
 </body>
 </html>

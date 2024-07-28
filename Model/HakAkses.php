@@ -17,12 +17,19 @@ class HakAkses {
     }
 
     public function update($id, $namaAkses, $keterangan) {
-        $query = $this->db->prepare("UPDATE HakAkses SET NamaAkses = ?, Keterangan = ? WHERE IdAkses = ?");
+        $query = $this->db->prepare("UPDATE HakAkses SET NamaAkses = ?, Keterangan = ? WHERE id = ?");
         return $query->execute([$namaAkses, $keterangan, $id]);
     }
 
     public function delete($id) {
-        $query = $this->db->prepare("DELETE FROM HakAkses WHERE IdAkses = ?");
+        $query = $this->db->prepare("DELETE FROM HakAkses WHERE id = ?");
         return $query->execute([$id]);
     }
+
+    public function readItem($id) {
+        $query = $this->db->prepare("SELECT * FROM HakAkses WHERE id = ?");
+        $query->execute([$id]);
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+
 }
